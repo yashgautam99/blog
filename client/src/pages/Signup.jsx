@@ -11,50 +11,59 @@ function Signup() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Function to handle form input changes
   const handleChange = (e) => {
+    // Update the formData state object with the new value from the input field
+    // e.target.id is used to update the specific field (username, email, password)
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent the default form submission behavior (which reloads the page)
 
-    // Ensure all fields are filled
+    // Check if all required fields (username, email, password) are filled
     if (!formData.username || !formData.email || !formData.password) {
-      return setErrorMessage("Please fill out all required fields");
+      // If any field is missing, set an error message and stop the process
+      return setErrorMessage("Please fill out all fields.");
     }
 
-    // Reset error message on submit
-    setErrorMessage(null);
-
     try {
+      // Set loading to true to show the user something is happening (e.g., a spinner)
       setLoading(true);
 
+      // Clear any previous error messages
+      setErrorMessage(null);
+
+      // Send the form data to the server via a POST request
       const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        method: "POST", // Using POST method to send data
+        headers: { "Content-Type": "application/json" }, // Ensure the request is sent as JSON
+        body: JSON.stringify(formData), // Convert the form data object to a JSON string to send
       });
 
-      // Check if the response is not empty and is JSON
-      if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
-      }
-      const text = await res.text(); // Parse the response as plain text
-      const data = text ? JSON.parse(text) : {}; // Parse only if non-empty response
+      // Parse the JSON response from the server
+      const data = await res.json();
 
+      // Check if the server responded with a success = false
       if (data.success === false) {
-        setLoading(false);
-        return setErrorMessage(data.message || "Something went wrong");
+        // If there's an error, display the error message from the server
+        return setErrorMessage(data.message);
       }
+
+      // Stop the loading spinner
       setLoading(false);
 
+      // If the request was successful (res.ok is true), navigate to the sign-in page
       if (res.ok) {
         navigate("/sign-in");
       }
     } catch (error) {
-      setErrorMessage(error.message || "An unexpected error occurred");
+      // If there's a network or server error, display it
+      setErrorMessage(error.message);
+
+      // Stop the loading spinner
       setLoading(false);
     }
   };
