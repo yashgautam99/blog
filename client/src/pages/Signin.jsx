@@ -4,11 +4,19 @@ import { MdEmail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { Badge } from "flowbite-react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 function SignIn() {
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // Function to handle form input changes
@@ -25,16 +33,11 @@ function SignIn() {
     // Check if all required fields (username, email, password) are filled
     if (!formData.email || !formData.password) {
       // If any field is missing, set an error message and stop the process
-      return setErrorMessage("Please fill out all fields.");
+      return dispatch(signInFailure("Please fill all the required fields"));
     }
 
     try {
-      // Set loading to true to show the user something is happening (e.g., a spinner)
-      setLoading(true);
-
-      // Clear any previous error messages
-      setErrorMessage(null);
-
+      dispatch(signInStart());
       // Send the form data to the server via a POST request
       const res = await fetch("/api/auth/signin", {
         method: "POST", // Using POST method to send data
@@ -48,22 +51,17 @@ function SignIn() {
       // Check if the server responded with a success = false
       if (data.success === false) {
         // If there's an error, display the error message from the server
-        return setErrorMessage(data.message);
+        dispatch(signInFailure(data.message));
       }
-
-      // Stop the loading spinner
-      setLoading(false);
 
       // If the request was successful (res.ok is true), navigate to the sign-in page
       if (res.ok) {
+        dispatch(signInSuccess(data));
         navigate("/home");
       }
     } catch (error) {
-      // If there's a network or server error, display it
-      setErrorMessage(error.message);
-
-      // Stop the loading spinner
-      setLoading(false);
+      // If there's a network or server error, display
+      dispatch(signInFailure(error.message));
     }
   };
 
