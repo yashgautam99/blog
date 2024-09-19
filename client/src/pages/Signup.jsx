@@ -105,7 +105,7 @@ function Signup() {
               </div>
               <TextInput
                 type="email"
-                placeholder="Email"
+                placeholder="name@example.com"
                 id="email"
                 className="mt-2"
                 onChange={handleChange}
@@ -118,7 +118,7 @@ function Signup() {
               </div>
               <TextInput
                 type="password"
-                placeholder="Password"
+                placeholder="********"
                 id="password"
                 className="mt-2 rounded-full focus:border-teal-400 focus:ring focus:ring-teal-300 focus:ring-opacity-50"
                 onChange={handleChange}
