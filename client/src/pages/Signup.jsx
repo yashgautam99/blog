@@ -5,6 +5,7 @@ import { MdEmail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { Badge } from "flowbite-react";
 import { useState } from "react";
+import OAuth from "../components/OAuth";
 
 function Signup() {
   const [formData, setFormData] = useState({});
@@ -139,6 +140,7 @@ function Signup() {
                 "Sign Up"
               )}
             </Button>
+            <OAuth />
           </form>
 
           <div className="flex flex-wrap gap-2 mt-3">

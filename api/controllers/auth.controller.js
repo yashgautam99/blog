@@ -52,3 +52,56 @@ export const signin = async (req, res, next) => {
     next(error);
   }
 };
+
+// google sign in
+export const google = async (req, res, next) => {
+  const { email, name, googlePhotoUrl } = req.body;
+
+  try {
+    // Check if the user already exists
+    const user = await User.findOne({ email });
+
+    if (user) {
+      // If the user exists, generate a JWT token and send it back
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const { password, ...rest } = user._doc;
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
+    } else {
+      // Generate a random password for the new user
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+
+      // Create a new user
+      const newUser = new User({
+        username:
+          name.toLowerCase().split(" ").join("") +
+          Math.random().toString(9).slice(-4),
+        password: hashedPassword,
+        email,
+        profilePicture: googlePhotoUrl,
+      });
+
+      // Save the new user to the database
+      await newUser.save();
+
+      // Generate a JWT token for the new user and send it back
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const { password, ...rest } = newUser._doc;
+      res
+        .status(201)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
