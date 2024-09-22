@@ -5,10 +5,7 @@ import { MdOutlineEmojiEmotions } from "react-icons/md";
 
 function Footercom() {
   return (
-    <Footer
-      container
-      className="border-t-4 border-teal-500 bg-gradient-to-br from-gray-100 via-gray-200 to-white text-gray-800"
-    >
+    <Footer container className="border-t-4 border-teal-500  text-gray-800">
       <div className="w-full max-w-7xl mx-auto py-10">
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 text-center sm:text-left">
           {/* Brand Section */}
@@ -30,29 +27,17 @@ function Footercom() {
               title="Company"
               className="text-lg font-semibold text-gray-700"
             />
-            <Footer.LinkGroup col className="space-y-2">
-              <Footer.Link
-                href="/about"
-                className="text-gray-600 hover:text-gray-800"
-              >
+            <Footer.LinkGroup col className="space-y-2 ">
+              <Footer.Link href="/about" className="text-gray-600 ">
                 About Us
               </Footer.Link>
-              <Footer.Link
-                href="#"
-                className="text-gray-600 hover:text-gray-800"
-              >
+              <Footer.Link href="#" className="text-gray-600 ">
                 Careers
               </Footer.Link>
-              <Footer.Link
-                href="#"
-                className="text-gray-600 hover:text-gray-800"
-              >
+              <Footer.Link href="#" className="text-gray-600">
                 Blog
               </Footer.Link>
-              <Footer.Link
-                href="#"
-                className="text-gray-600 hover:text-gray-800"
-              >
+              <Footer.Link href="#" className="text-gray-600">
                 Contact
               </Footer.Link>
             </Footer.LinkGroup>
@@ -105,10 +90,10 @@ function Footercom() {
             year={new Date().getFullYear()}
           />
           <div className="flex space-x-6 mt-4 sm:mt-0">
-            <Footer.Link href="#" className="text-gray-600 hover:text-gray-800">
+            <Footer.Link href="#" className="text-gray-600 ">
               Privacy Policy
             </Footer.Link>
-            <Footer.Link href="#" className="text-gray-600 hover:text-gray-800">
+            <Footer.Link href="#" className="text-gray-600">
               Terms & Conditions
             </Footer.Link>
           </div>
