@@ -22,6 +22,7 @@ function DashSidebar() {
             <Sidebar.Item
               icon={FaUser}
               active={tab === "profile"}
+              as="div"
               className="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer"
               label={"User"}
             >
