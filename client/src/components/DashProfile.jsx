@@ -4,12 +4,18 @@ import { useSelector } from "react-redux";
 import {
   getDownloadURL,
   getStorage,
-  ref, // <-- Import ref here
+  ref, // Corrected import for ref
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import {
+  updateFailure,
+  updateStart,
+  updateSuccess,
+} from "../redux/user/userSlice";
+import { useDispatch } from "react-redux";
 
 function DashProfile() {
   const { currentUser } = useSelector((state) => state.user);
@@ -17,16 +23,40 @@ function DashProfile() {
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
-  const filePickerRef = useRef();
+  const [imageFileUploading, setImageFileUploading] = useState(null);
+  const [updateUserSucess, setUpdateUserSucess] = useState(null);
+  const [updateUserError, setUpdateUserError] = useState(null);
+  const [formData, setFormData] = useState({});
 
+  const filePickerRef = useRef();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (updateUserSucess || updateUserError) {
+      const timer = setTimeout(() => {
+        setUpdateUserSucess(null);
+        setUpdateUserError(null);
+      }, 5000); // 5 seconds
+
+      return () => clearTimeout(timer); // Clean up the timer on unmount
+    }
+  }, [updateUserSucess, updateUserError]);
+
+  // Handle Image Upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Check if the file is larger than 2MB
+      if (file.size > 2 * 1024 * 1024) {
+        setImageFileUploadError("File size exceeds 2MB");
+        return;
+      }
       setImageFile(file);
       setImageFileUrl(URL.createObjectURL(file));
     }
   };
 
+  // Upload image to Firebase
   useEffect(() => {
     if (imageFile) {
       uploadImage();
@@ -34,10 +64,11 @@ function DashProfile() {
   }, [imageFile]);
 
   const uploadImage = async () => {
-    setImageFileUploadError(null);
+    setImageFileUploading(true);
+    setImageFileUploadError(null); // Clear previous errors
     const storage = getStorage(app);
     const fileName = new Date().getTime() + imageFile.name;
-    const storageRef = ref(storage, fileName); // <-- Corrected ref
+    const storageRef = ref(storage, fileName); // Corrected ref usage
     const uploadTask = uploadBytesResumable(storageRef, imageFile);
 
     uploadTask.on(
@@ -54,13 +85,60 @@ function DashProfile() {
         setImageFileUploadProgress(null);
         setImageFile(null);
         setImageFileUrl(null);
+        setImageFileUploading(false);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImageFileUrl(downloadURL);
+          setFormData({ ...formData, profilePicture: downloadURL });
+          setImageFileUploading(false);
         });
       }
     );
+  };
+
+  // Handle Form Input Change
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+  };
+
+  // Handle Form Submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setUpdateUserError(null);
+    setUpdateUserSucess(null);
+
+    // Prevent submission if no changes are made
+    if (!Object.keys(formData).some((key) => formData[key])) {
+      setUpdateUserError("No changes made to update");
+      return;
+    }
+    if (imageFileUploading) {
+      setUpdateUserError("Please wait while uploading the image");
+      return;
+    }
+
+    try {
+      dispatch(updateStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(updateFailure(data.message));
+        setUpdateUserError(data.message);
+        return;
+      } else {
+        dispatch(updateSuccess(data));
+        setUpdateUserSucess("User successfully updated");
+        setImageFileUploadProgress(null);
+      }
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+      setUpdateUserError("An error occurred while updating the user");
+    }
   };
 
   return (
@@ -72,7 +150,7 @@ function DashProfile() {
         Welcome to your dashboard profile
       </p>
 
-      <form className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         {/* Profile Picture */}
         <input
           type="file"
@@ -85,7 +163,7 @@ function DashProfile() {
           className="relative w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full "
           onClick={() => filePickerRef.current.click()}
         >
-          {imageFileUploadProgress && (
+          {imageFileUploadProgress !== null && (
             <CircularProgressbar
               value={imageFileUploadProgress || 0}
               text={`${imageFileUploadProgress}%`}
@@ -126,8 +204,9 @@ function DashProfile() {
             type="text"
             id="username"
             placeholder="Username"
-            defaultValue={currentUser.username}
+            value={formData.username || currentUser.username}
             className="text-gray-800 dark:text-gray-200  dark:border-gray-600 focus:ring-blue-500"
+            onChange={handleChange}
           />
         </div>
 
@@ -137,8 +216,9 @@ function DashProfile() {
             type="email"
             id="email"
             placeholder="Email"
-            defaultValue={currentUser.email}
+            value={formData.email || currentUser.email}
             className="text-gray-800 dark:text-gray-200   dark:border-gray-600 focus:ring-blue-500"
+            onChange={handleChange}
           />
         </div>
 
@@ -148,7 +228,9 @@ function DashProfile() {
             type="password"
             id="password"
             placeholder="Password"
+            value={formData.password || ""}
             className="text-gray-800 dark:text-gray-200  dark:border-gray-600 focus:ring-blue-500"
+            onChange={handleChange}
           />
         </div>
 
@@ -170,6 +252,16 @@ function DashProfile() {
           Sign out
         </button>
       </div>
+      {updateUserSucess && (
+        <Alert color="success" className="mt-5">
+          {updateUserSucess}
+        </Alert>
+      )}
+      {updateUserError && (
+        <Alert color="failure" className="mt-5">
+          {updateUserError}
+        </Alert>
+      )}
     </div>
   );
 }
