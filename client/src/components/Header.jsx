@@ -14,11 +14,29 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
 
+import { signoutSuccess } from "../redux/user/userSlice";
+
 function Header() {
   const path = useLocation().pathname;
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const { theme } = useSelector((state) => state.theme);
+
+  const handleSignout = async () => {
+    try {
+      const res = await fetch("/api/user/signout", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signoutSuccess());
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <Navbar className="border-b-2">
       <Link
@@ -88,7 +106,10 @@ function Header() {
 
             <Dropdown.Divider className="my-2 border-purple-300" />
 
-            <Dropdown.Item className="hover:bg-gray-200 text-black transition duration-300 ease-in-out">
+            <Dropdown.Item
+              className="hover:bg-gray-200 text-black transition duration-300 ease-in-out"
+              onClick={handleSignout}
+            >
               Sign Out
             </Dropdown.Item>
           </Dropdown>
