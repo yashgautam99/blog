@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.route.js";
 import signup from "./routes/auth.route.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 // MongoDB connection
@@ -15,6 +16,7 @@ mongoose
   });
 
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
 const port = 3000;
 
