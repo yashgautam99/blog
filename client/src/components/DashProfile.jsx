@@ -279,7 +279,7 @@ function DashProfile() {
           className="w-full py-3 rounded-md bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold hover:shadow-lg transition duration-300 transform hover:-translate-y-1"
           disabled={loading || imageFileUploading}
         >
-          {loading ? "Loading..." : "Updating..."}
+          {loading ? "Loading..." : "Update"}
         </button>
         {currentUser.isAdmin && (
           <Link to={"/create-post"}>
