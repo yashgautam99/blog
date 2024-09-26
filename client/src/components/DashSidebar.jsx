@@ -55,7 +55,6 @@ function DashSidebar() {
             <Link to="/dashboard?tab=posts">
               <Sidebar.Item
                 icon={FaClipboardList}
-                onClick={handleSignout}
                 className="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer"
               >
                 Posts
