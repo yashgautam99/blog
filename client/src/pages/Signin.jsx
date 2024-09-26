@@ -6,6 +6,7 @@ import { Badge } from "flowbite-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import OAuth from "../components/OAuth";
 import {
   signInStart,
   signInSuccess,
@@ -123,6 +124,7 @@ function SignIn() {
                 "Sign In"
               )}
             </Button>
+            <OAuth />
           </form>
 
           <div className="flex flex-wrap gap-2 mt-3">
