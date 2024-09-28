@@ -102,10 +102,37 @@ export default function CreatePost() {
               setFormData({ ...formData, category: e.target.value })
             }
           >
-            <option value="uncategorized">Select a category</option>
-            <option value="javascript">JavaScript</option>
-            <option value="reactjs">React.js</option>
-            <option value="nextjs">Next.js</option>
+            <option value="uncategorized">Select Category</option>
+            <option value="Technology">Technology</option>
+            <option value="Lifestyle">Lifestyle</option>
+            <option value="Business">Business</option>
+            <option value="Travel">Travel</option>
+            <option value="Health">Health</option>
+            <option value="Food">Food</option>
+            <option value="Education">Education</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Finance">Finance</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Sports">Sports</option>
+            <option value="News">News</option>
+            <option value="Personal Development">Personal Development</option>
+            <option value="Environment">Environment</option>
+            <option value="Art">Art</option>
+            <option value="Science">Science</option>
+            <option value="Music">Music</option>
+            <option value="Photography">Photography</option>
+            <option value="Parenting">Parenting</option>
+            <option value="DIY & Crafts">DIY & Crafts</option>
+            <option value="Books">Books</option>
+            <option value="Gaming">Gaming</option>
+            <option value="Real Estate">Real Estate</option>
+            <option value="Politics">Politics</option>
+            <option value="Automotive">Automotive</option>
+            <option value="Pets">Pets</option>
+            <option value="Relationships">Relationships</option>
+            <option value="Movies & TV">Movies & TV</option>
+            <option value="Startups">Startups</option>
+            <option value="Fitness">Fitness</option>
           </Select>
         </div>
         <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
