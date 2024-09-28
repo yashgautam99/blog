@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import { signoutSuccess } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { FaUserGroup } from "react-icons/fa6";
 
 function DashSidebar() {
   const location = useLocation();
@@ -55,9 +56,21 @@ function DashSidebar() {
             <Link to="/dashboard?tab=posts">
               <Sidebar.Item
                 icon={FaClipboardList}
+                active={tab === "posts"}
                 className="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer"
               >
                 Posts
+              </Sidebar.Item>
+            </Link>
+          )}
+          {currentUser.isAdmin && (
+            <Link to="/dashboard?tab=users">
+              <Sidebar.Item
+                icon={FaUserGroup}
+                active={tab === "users"}
+                className="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer"
+              >
+                Users
               </Sidebar.Item>
             </Link>
           )}

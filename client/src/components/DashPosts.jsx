@@ -79,9 +79,11 @@ export default function DashPosts() {
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
-              <Table.HeadCell>Date updated</Table.HeadCell>
-              <Table.HeadCell>Post image</Table.HeadCell>
-              <Table.HeadCell>Post title</Table.HeadCell>
+              <Table.HeadCell>Date Updated</Table.HeadCell>
+              <Table.HeadCell>Time Updated</Table.HeadCell>{" "}
+              {/* New Time Column */}
+              <Table.HeadCell>Post Image</Table.HeadCell>
+              <Table.HeadCell>Post Title</Table.HeadCell>
               <Table.HeadCell>Category</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
               <Table.HeadCell>Edit</Table.HeadCell>
@@ -91,6 +93,14 @@ export default function DashPosts() {
                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>
                     {new Date(post.updatedAt).toLocaleDateString()}
+                  </Table.Cell>
+                  <Table.Cell>
+                    {" "}
+                    {/* New Time Column */}
+                    {new Date(post.updatedAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </Table.Cell>
                   <Table.Cell>
                     <Link to={`/post/${post.slug}`}>
