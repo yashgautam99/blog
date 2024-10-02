@@ -10,16 +10,21 @@ import PrivateRoute from "./components/PrivateRoute";
 import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute.jsx";
 import CreatePost from "./pages/CreatePost";
 import UpdatePost from "./pages/UpdatePost.jsx";
+import PostPage from "./pages/PostPage.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
+import Search from "./pages/Search.jsx";
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/Sign-up" element={<Signup />} />
         <Route path="/sign-in" element={<Signin />} />
+        <Route path="/search" element={<Search />} />
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
@@ -27,6 +32,8 @@ function App() {
           <Route path="/create-post" element={<CreatePost />} />
           <Route path="/update-post/:postId" element={<UpdatePost />} />
         </Route>
+
+        <Route path="/post/:postSlug" element={<PostPage />} />
       </Routes>
       <Footer />
     </BrowserRouter>

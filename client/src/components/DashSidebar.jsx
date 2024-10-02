@@ -1,5 +1,11 @@
 import { Sidebar } from "flowbite-react";
-import { FaUserCircle, FaSignOutAlt, FaClipboardList } from "react-icons/fa";
+import {
+  FaUserCircle,
+  FaSignOutAlt,
+  FaClipboardList,
+  FaCommentAlt,
+  FaTachometerAlt,
+} from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { signoutSuccess } from "../redux/user/userSlice";
@@ -51,6 +57,18 @@ function DashSidebar() {
               Profile
             </Sidebar.Item>
           </Link>
+          {currentUser && currentUser.isAdmin && (
+            <Link to="/dashboard?tab=dash">
+              <Sidebar.Item
+                active={tab === "dash" || !tab}
+                className="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer"
+                icon={FaTachometerAlt}
+                as="div"
+              >
+                Dashboard
+              </Sidebar.Item>
+            </Link>
+          )}
           {/* Sign Out Section */}
           {currentUser.isAdmin && (
             <Link to="/dashboard?tab=posts">
@@ -58,27 +76,43 @@ function DashSidebar() {
                 icon={FaClipboardList}
                 active={tab === "posts"}
                 className="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer"
+                as="div"
               >
                 Posts
               </Sidebar.Item>
             </Link>
           )}
+
           {currentUser.isAdmin && (
-            <Link to="/dashboard?tab=users">
-              <Sidebar.Item
-                icon={FaUserGroup}
-                active={tab === "users"}
-                className="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer"
-              >
-                Users
-              </Sidebar.Item>
-            </Link>
+            <>
+              <Link to="/dashboard?tab=users">
+                <Sidebar.Item
+                  icon={FaUserGroup}
+                  active={tab === "users"}
+                  className="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer"
+                  as="div"
+                >
+                  Users
+                </Sidebar.Item>
+              </Link>
+              <Link to="/dashboard?tab=comments">
+                <Sidebar.Item
+                  active={tab === "comments"}
+                  className="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer"
+                  icon={FaCommentAlt}
+                  as="div"
+                >
+                  Comments
+                </Sidebar.Item>
+              </Link>
+            </>
           )}
 
           <Sidebar.Item
             icon={FaSignOutAlt}
             onClick={handleSignout}
             className="flex items-center space-x-2 p-3 rounded-lg text-red-600 bg-red-200 dark:text-white dark:bg-red-800 hover:bg-red-300 dark:hover:bg-red-700 cursor-pointer transition-colors duration-200"
+            as="div"
           >
             Sign Out
           </Sidebar.Item>
