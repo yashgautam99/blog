@@ -24,6 +24,7 @@ function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false); // State for dropdown
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -56,103 +57,131 @@ function Header() {
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
-  return (
-    <Navbar className="border-b-2">
-      <Link
-        to="/"
-        className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
-      >
-        <span
-          className="px-2 py-1 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600
- rounded-lg text-white"
-        >
-          Inkflow
-        </span>
-      </Link>
-      <form className="lg:w-80" onSubmit={handleSubmit}>
-        <TextInput
-          type="text"
-          placeholder="Search Blog"
-          rightIcon={IoSearch}
-          className="hidden lg:inline "
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </form>
 
-      <Button className="w-12 h-10 lg:hidden" color="gray" pill>
-        <IoSearch />
-      </Button>
-      <div className="flex gap-2 md:order-2">
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen); // Toggle dropdown visibility
+  };
+
+  return (
+    <div>
+      <Navbar className="border-b-2 relative">
+        <Link
+          to="/"
+          className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
+        >
+          <span className="px-2 py-1 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 rounded-lg text-white">
+            Inkflow
+          </span>
+        </Link>
+
+        {/* Search form for larger screens */}
+        <form className="lg:w-80 hidden lg:block" onSubmit={handleSubmit}>
+          <TextInput
+            type="text"
+            placeholder="Search Blog"
+            rightIcon={IoSearch}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </form>
+
+        {/* Mobile search icon */}
         <Button
-          className="w-12 h-10 sm:inline"
+          className="w-12 h-10 lg:hidden"
           color="gray"
           pill
-          onClick={() => dispatch(toggleTheme())}
+          onClick={toggleSearch}
         >
-          {theme === "dark" ? (
-            <MdSunny className="w-8" />
-          ) : (
-            <FaMoon className="w-8" />
-          )}
+          <IoSearch />
         </Button>
 
-        {currentUser ? (
-          <Dropdown
-            arrowIcon={false}
-            inline
-            label={
-              <Avatar
-                alt="user"
-                img={currentUser.profilePicture}
-                rounded
-                className=" transform hover:scale-105 transition duration-300 ease-in-out hover:shadow-2xl"
-              />
-            }
+        <div className="flex gap-2 md:order-2">
+          <Button
+            className="w-12 h-10 sm:inline"
+            color="gray"
+            pill
+            onClick={() => dispatch(toggleTheme())}
           >
-            <Dropdown.Header className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 p-4 rounded-t-lg text-white shadow-lg">
-              <span className="block text-sm font-semibold">
-                @{currentUser.username}
-              </span>
-              <span className="block text-xs truncate opacity-90">
-                {currentUser.email}
-              </span>
-            </Dropdown.Header>
+            {theme === "dark" ? (
+              <MdSunny className="w-8" />
+            ) : (
+              <FaMoon className="w-8" />
+            )}
+          </Button>
 
-            <Link to="/dashboard?tab=profile">
-              <Dropdown.Item className="hover:bg-gray-200 text-black transition duration-300 ease-in-out">
-                Profile
-              </Dropdown.Item>
-            </Link>
-
-            <Dropdown.Divider className="my-2 border-purple-300" />
-
-            <Dropdown.Item
-              className="hover:bg-gray-200 text-black transition duration-300 ease-in-out"
-              onClick={handleSignout}
+          {currentUser ? (
+            <Dropdown
+              arrowIcon={false}
+              inline
+              label={
+                <Avatar
+                  alt="user"
+                  img={currentUser.profilePicture}
+                  rounded
+                  className="transform hover:scale-105 transition duration-300 ease-in-out hover:shadow-2xl"
+                />
+              }
             >
-              Sign Out
-            </Dropdown.Item>
-          </Dropdown>
-        ) : (
-          <Link to="/sign-in">
-            <Button gradientDuoTone="purpleToBlue" outline>
-              Sign In
-            </Button>
-          </Link>
-        )}
+              <Dropdown.Header className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 p-4 rounded-t-lg text-white shadow-lg">
+                <span className="block text-sm font-semibold">
+                  @{currentUser.username}
+                </span>
+                <span className="block text-xs truncate opacity-90">
+                  {currentUser.email}
+                </span>
+              </Dropdown.Header>
 
-        <NavbarToggle />
-      </div>
-      <Navbar.Collapse>
-        <Navbar.Link active={path === "/"} as={"div"}>
-          <Link to="/">Home</Link>
-        </Navbar.Link>
-        <Navbar.Link active={path === "/about"} as={"div"}>
-          <Link to="/about">About</Link>
-        </Navbar.Link>
-      </Navbar.Collapse>
-    </Navbar>
+              <Link to="/dashboard?tab=profile">
+                <Dropdown.Item className="hover:bg-gray-200 text-black transition duration-300 ease-in-out">
+                  Profile
+                </Dropdown.Item>
+              </Link>
+
+              <Dropdown.Divider className="my-2 border-purple-300" />
+
+              <Dropdown.Item
+                className="hover:bg-gray-200 text-black transition duration-300 ease-in-out"
+                onClick={handleSignout}
+              >
+                Sign Out
+              </Dropdown.Item>
+            </Dropdown>
+          ) : (
+            <Link to="/sign-in">
+              <Button gradientDuoTone="purpleToBlue" outline>
+                Sign In
+              </Button>
+            </Link>
+          )}
+
+          <NavbarToggle />
+        </div>
+
+        <Navbar.Collapse>
+          <Navbar.Link active={path === "/"} as={"div"}>
+            <Link to="/">Home</Link>
+          </Navbar.Link>
+          <Navbar.Link active={path === "/about"} as={"div"}>
+            <Link to="/about">About</Link>
+          </Navbar.Link>
+        </Navbar.Collapse>
+      </Navbar>
+
+      {/* This will be the mobile search input that slides content below it */}
+      {isSearchOpen && (
+        <div className="mt-4 w-full px-4">
+          <form onSubmit={handleSubmit} className="w-full">
+            <TextInput
+              type="text"
+              placeholder="Search Blog"
+              rightIcon={IoSearch}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </form>
+        </div>
+      )}
+    </div>
   );
 }
 
