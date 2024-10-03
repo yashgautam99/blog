@@ -21,7 +21,7 @@ function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.user) || {};
   const { theme } = useSelector((state) => state.theme);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false); // State for dropdown
@@ -164,6 +164,20 @@ function Header() {
           <Navbar.Link active={path === "/about"} as={"div"}>
             <Link to="/about">About</Link>
           </Navbar.Link>
+          {currentUser && currentUser.isAdmin && (
+            <Link to={"/create-post"}>
+              <Button
+                type="button"
+                gradientDuoTone="purpleToPink"
+                className="w-full md:h-6 md:text-xs flex items-center justify-center md:justify-center "
+              >
+                <span className="hidden md:block">Create a post</span>{" "}
+                {/* Show only on medium and larger screens */}
+                <span className="block md:hidden">Create Post</span>{" "}
+                {/* Show only on smaller screens */}
+              </Button>
+            </Link>
+          )}
         </Navbar.Collapse>
       </Navbar>
 
