@@ -133,6 +133,7 @@ export default function CreatePost() {
             <option value="Movies & TV">Movies & TV</option>
             <option value="Startups">Startups</option>
             <option value="Fitness">Fitness</option>
+            <option value="AI/ML">AI/ML</option>
           </Select>
         </div>
         <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
