@@ -44,7 +44,7 @@ function Footercom() {
           </div>
 
           {/* Follow Us */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <Footer.Title
               title="Follow Us"
               className="text-lg font-semibold text-gray-700 dark:text-gray-300"
@@ -71,7 +71,7 @@ function Footercom() {
                 />
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Divider */}
