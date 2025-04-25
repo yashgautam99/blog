@@ -1,7 +1,7 @@
 import { Footer } from "flowbite-react";
 import { Link } from "react-router-dom";
-// import { BsFacebook, BsInstagram, BsTwitter, BsGithub } from "react-icons/bs";
-// import { MdOutlineEmojiEmotions } from "react-icons/md";
+import { BsFacebook, BsInstagram, BsTwitter, BsGithub } from "react-icons/bs";
+import { MdOutlineEmojiEmotions } from "react-icons/md";
 
 function Footercom() {
   return (
